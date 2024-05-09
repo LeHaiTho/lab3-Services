@@ -1,19 +1,51 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
+import React, { useEffect } from 'react'
+import 'react-native-gesture-handler'
+import { useMyContextController } from '../context'
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'
+import HomeScreen from '../screens/HomeScreen'
 import LoginScreen from '../screens/LoginScreen'
 import RegisterScreen from '../screens/RegisterScreen'
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen'
-
+import { Appbar, Title } from 'react-native-paper'
 const Stack = createStackNavigator()
-const MyStack = () => {
+const MyStack = ({ navigation }) => {
+  const [controller, dispatch] = useMyContextController()
+  const { userLogin } = controller
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-        <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+      <Stack.Navigator
+        screenOptions={{
+          headerTitleAlign: 'center',
+        }}>
+
+        <Stack.Screen
+          name="HomeScreen"
+          component={HomeScreen}
+          options={{
+            headerLeft: null,
+            title: 'Xin chào, ' +
+              (userLogin != null && userLogin.fullname)
+          }} />
+        <Stack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+          options={{
+            title: 'Register'
+          }} />
+
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginScreen} options={{
+            title: 'Login',
+            headerLeft: null,
+          }}
+        />
+
+        <Stack.Screen
+          name="ForgotPasswordScreen"
+          component={ForgotPasswordScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   )
