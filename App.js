@@ -1,88 +1,41 @@
-// import firestore from '@react-native-firebase/firestore';
-// import React, { useEffect, useState } from 'react';
-// import { FlatList, View } from 'react-native';
-// import 'react-native-gesture-handler';
-// import { Appbar, Button, TextInput } from 'react-native-paper';
-// import Todo from './src/components/Todo';
-// const App = () => {
-//   const [todo, setTodo] = useState('')
-//   const [todos, setTodos] = useState([])
-//   const [loading, setLoading] = useState(true)
-//   const ref = firestore().collection('todos')
-
-//   // handle add to do 
-//   const handleAddTodo = async () => {
-//     await ref.add({
-//       title: todo,
-//       complete: false
-//     })
-//     setTodo('')
-//   }
-//   useEffect(() => {
-//     return ref.onSnapshot(querySnapshot => {
-//       const list = []
-//       querySnapshot.forEach(doc => {
-//         const { title, complete } = doc.data();
-//         list.push({
-//           id: doc.id,
-//           title,
-//           complete
-//         })
-//       })
-//       setTodos(list)
-//       if (loading) {
-//         setLoading(false)
-//       }
-//     })
-//   })
-//   if (loading) {
-//     return null
-//   }
-
-//   return (
-//     // lab3 ly thuyet 
-//     <View style={{
-//       flex: 1
-//     }}>
-//       <Appbar>
-//         <Appbar.Content title='TODOs list' />
-//       </Appbar>
-//       <FlatList style={{
-//         flex: 1
-//       }}
-//         data={todos}
-//         keyExtractor={item => item.id}
-//         renderItem={({ item }) => <Todo{...item} />}
-//       />
-
-//       <TextInput label='New Todo' value={todo} onChangeText={(text) => setTodo(text)} />
-//       <Button onPress={handleAddTodo}>Add TODO</Button>
-//     </View>
-
-
-//     // <RegisterScreen />
-//     // <LoginScreen />
-//     // <MyStack />
-
-//     // lab 3
-//     // <MyContextControllerProvider>
-//     //   <RegisterScreen />
-//     // </MyContextControllerProvider>
-//   )
-// }
-
-// export default App
 import 'react-native-gesture-handler';
-import { View, Text } from 'react-native'
-import React from 'react'
-import RegisterScreen from './src/screens/RegisterScreen'
+import {View, Text} from 'react-native';
+import React from 'react';
+import RegisterScreen from './src/screens/RegisterScreen';
 import MyStack from './src/routes/MyStack';
-import { MyContextControllerProvider } from './src/context';
-
+import {MyContextControllerProvider} from './src/context';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {useEffect} from 'react';
 const App = () => {
+  const USERS = firestore().collection('USERS');
+  const admin = {
+    fullname: 'admin',
+    email: 'letho11112002@gmail.com',
+    password: 'admin123',
+    phoneNumber: '324230840328',
+    role: 'admin',
+    address: 'Bình Dương',
+  };
+  useEffect(() => {
+    USERS.doc(admin.email).onSnapshot(u => {
+      if (!u.exists) {
+        auth()
+          .createUserWithEmailAndPassword(admin.email, admin.password)
+          .then(() => {
+            USERS.doc(admin.email).set(admin);
+            console.log('add new admin account');
+          });
+      } else {
+        console.log('admin account already exists');
+      }
+    });
+  }, []);
   return (
-    <MyContextControllerProvider><MyStack /></MyContextControllerProvider>
-  )
-}
+    <MyContextControllerProvider>
+      <MyStack />
+    </MyContextControllerProvider>
+  );
+};
 
-export default App
+export default App;

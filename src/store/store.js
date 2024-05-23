@@ -13,8 +13,6 @@ const reducer = (state, action) => {
       return {...state, userLogin: action.value};
     case 'LOGOUT':
       return {...state, userLogin: null};
-    case 'JOBS_LIST':
-      return {...state, jobsList: action.value};
     default: {
       throw new Error('Invalid action');
     }
@@ -25,10 +23,9 @@ const reducer = (state, action) => {
 const MyContextControllerProvider = ({children}) => {
   const initialState = {
     userLogin: null,
-    jobsList: [],
   };
   const [controller, dispatch] = useReducer(reducer, initialState);
-  const value = useMemo(() => [controller, dispatch], [controller, dispatch]);
+  const value = useMemo(() => [controller, dispatch], [dispatch, controller]);
   // dependencies
   return <MyContext.Provider value={value}>{children}</MyContext.Provider>;
 };
@@ -45,7 +42,6 @@ const useMyContextController = () => {
 
 //Tham chiếu collection
 const USERS = firestore().collection('USERS');
-const JOB = firestore().collection('JOB');
 
 // Dinh nghia action
 // các action phải thông qua Dispatch
@@ -58,7 +54,7 @@ const createAccount = (email, password, fullname, role) => {
         email,
         password,
         fullname,
-        role: 'custom',
+        role,
       });
       Alert.alert('Register success');
     })
