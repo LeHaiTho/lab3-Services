@@ -1,0 +1,54 @@
+import React from 'react';
+import {View, Button} from 'react-native';
+import {Icon, IconButton, Text} from 'react-native-paper';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import RouterServices from '../routers/RouterServices';
+// import 'react-native-gesture-handler';
+import Transaction from './Transaction';
+import Setting from './Setting';
+import Appoinent from './Appoinent';
+import COLORS from '../constants/color';
+
+const Tab = createBottomTabNavigator();
+export default function Customer() {
+  return (
+    <Tab.Navigator initialRouteName="RouterServices">
+      <Tab.Screen
+        name="RouterServices"
+        component={RouterServices}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Home',
+          tabBarIcon: () => (
+            <Icon source="home" color={COLORS.blue} size={26} />
+          ),
+          tabBarLabelStyle: {color: COLORS.blue, fontSize: 13},
+        }}
+      />
+      <Tab.Screen
+        name="Appointment"
+        component={Appoinent}
+        options={{
+          tabBarLabel: 'Appointment',
+          headerStyle: {backgroundColor: COLORS.blue},
+          headerTitleStyle: {color: 'white'},
+          tabBarIcon: () => (
+            <Icon source="cash" color={COLORS.blue} size={26} />
+          ),
+          tabBarLabelStyle: {color: COLORS.blue, fontSize: 13},
+        }}
+      />
+      <Tab.Screen
+        name="Setting"
+        component={Setting}
+        options={{
+          tabBarLabel: 'Setting',
+          headerStyle: {backgroundColor: COLORS.blue},
+          headerTitleStyle: {color: 'white'},
+          tabBarIcon: () => <Icon source="cog" color={COLORS.blue} size={26} />,
+          tabBarLabelStyle: {color: COLORS.blue},
+        }}
+      />
+    </Tab.Navigator>
+  );
+}

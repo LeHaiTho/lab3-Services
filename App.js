@@ -1,41 +1,45 @@
-import 'react-native-gesture-handler';
-import {View, Text} from 'react-native';
+// import 'react-native-gesture-handler';
 import React from 'react';
-import RegisterScreen from './src/screens/RegisterScreen';
-import MyStack from './src/routes/MyStack';
-import {MyContextControllerProvider} from './src/context';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {useEffect} from 'react';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {PaperProvider} from 'react-native-paper';
+import MyStack from './routers/MyStack';
+import {MyContextControllerProvider} from './store';
+// import {SafeAreaView} from 'react-native-safe-area-context';
+// import firestore from '@react-native-firebase/firestore';
+// import Todo from './Todos/todo';
+
 const App = () => {
-  const USERS = firestore().collection('USERS');
-  const admin = {
-    fullname: 'admin',
-    email: 'letho11112002@gmail.com',
-    password: 'admin123',
-    phoneNumber: '324230840328',
-    role: 'admin',
-    address: 'Bình Dương',
-  };
-  useEffect(() => {
-    USERS.doc(admin.email).onSnapshot(u => {
-      if (!u.exists) {
-        auth()
-          .createUserWithEmailAndPassword(admin.email, admin.password)
-          .then(() => {
-            USERS.doc(admin.email).set(admin);
-            console.log('add new admin account');
-          });
-      } else {
-        console.log('admin account already exists');
-      }
-    });
-  }, []);
   return (
+    // <SafeAreaView style={{flex: 1}}>
     <MyContextControllerProvider>
-      <MyStack />
+      {/* <View style={{flex: 1}}> */}
+      {/* <Signup /> */}
+      {/* <Signin /> */}
+      <PaperProvider>
+        <NavigationContainer>
+          <MyStack />
+        </NavigationContainer>
+      </PaperProvider>
+      {/* </View> */}
     </MyContextControllerProvider>
+    // </SafeAreaView>
+
+    // <PaperProvider>
+    //   <NavigationContainer>
+    //     <MyStack />
+    //   </NavigationContainer>
+    // </PaperProvider>
+    // <View style={{flex: 1}}>
+    //   <MyContextControllerProvider>
+    //     <PaperProvider>
+    //       <NavigationContainer>
+    //         <MyStack />
+    //       </NavigationContainer>
+    //     </PaperProvider>
+    //   </MyContextControllerProvider>
+    //   {/* <Home /> */}
+    // </View>
   );
 };
-
 export default App;
